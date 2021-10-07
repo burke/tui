@@ -13,22 +13,22 @@ module TUI
       def initialize(n)
         raise(ArgumentError, "invalid color index: #{n}") unless n >= 0 && n < 256
         @n = n
-        super
+        super()
       end
 
       sig { override.returns(String) }
-      def to_s
+      def hex
         T.must(PALETTE[@n]) # verified in initialize
       end
 
       sig { override.returns(String) }
       def sequence_fg
-        ''
+        "38;5;#{@n}"
       end
 
       sig { override.returns(String) }
       def sequence_bg
-        ''
+        "48;5;#{@n}"
       end
 
       PALETTE = T.let(%w(

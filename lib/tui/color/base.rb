@@ -10,7 +10,7 @@ module TUI
       abstract!
 
       sig { abstract.returns(String) }
-      def to_s; end
+      def hex; end
 
       sig { abstract.returns(String) }
       def sequence_fg; end

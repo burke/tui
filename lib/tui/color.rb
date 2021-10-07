@@ -26,22 +26,5 @@ module TUI
 
       RGBColor.new(rgb[0], rgb[1], rgb[2])
     end
-
-    # sig { returns(String) }
-    # def hex
-    #   unpacked = T.cast([@r, @g, @b] # [0.0, 1.0, 0.4]
-    #     .map { |v| (v * 255).round } # [0, 255, 102]
-    #     .map(&:chr).join             # "\x00\xFFf"
-    #     .unpack('H*'),               # ["00ff66"]
-    #   T::Array[String])
-    #   T.must(unpacked.first).prepend('#') # "#00ff66"
-    # end
-
-    # sig { params(r: Float, g: Float, b: Float).void }
-    # def initialize(r, g, b)
-    #   @r = r
-    #   @g = g
-    #   @b = b
-    # end
   end
 end

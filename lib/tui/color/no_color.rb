@@ -8,7 +8,7 @@ module TUI
       extend(T::Sig)
 
       sig { override.returns(String) }
-      def to_s
+      def hex
         ''
       end
 
