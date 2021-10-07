@@ -11,22 +11,22 @@ module TUI
       @n = n
     end
 
-    Black         = new(0)
-    Red           = new(1)
-    Green         = new(2)
-    Yellow        = new(3)
-    Blue          = new(4)
-    Magenta       = new(5)
-    Cyan          = new(6)
-    White         = new(7)
-    BrightBlack   = new(8)
-    BrightRed     = new(9)
-    BrightGreen   = new(10)
-    BrightYellow  = new(11)
-    BrightBlue    = new(12)
-    BrightMagenta = new(13)
-    BrightCyan    = new(14)
-    BrightWhite   = new(15)
+    Black         = T.let(new(0), ANSIColor)
+    Red           = T.let(new(1), ANSIColor)
+    Green         = T.let(new(2), ANSIColor)
+    Yellow        = T.let(new(3), ANSIColor)
+    Blue          = T.let(new(4), ANSIColor)
+    Magenta       = T.let(new(5), ANSIColor)
+    Cyan          = T.let(new(6), ANSIColor)
+    White         = T.let(new(7), ANSIColor)
+    BrightBlack   = T.let(new(8), ANSIColor)
+    BrightRed     = T.let(new(9), ANSIColor)
+    BrightGreen   = T.let(new(10), ANSIColor)
+    BrightYellow  = T.let(new(11), ANSIColor)
+    BrightBlue    = T.let(new(12), ANSIColor)
+    BrightMagenta = T.let(new(13), ANSIColor)
+    BrightCyan    = T.let(new(14), ANSIColor)
+    BrightWhite   = T.let(new(15), ANSIColor)
 
     HEX256 = T.let(%w(
       #000000 #800000 #008000 #808000 #000080 #800080 #008080 #c0c0c0
