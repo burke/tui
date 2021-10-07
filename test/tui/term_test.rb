@@ -80,8 +80,8 @@ module TUI
       SEQUENCES.each do |seq|
         arity = SEQUENCE_ARGS.fetch(seq, 0)
         args = [8] * arity
-        expected = Term.send(seq, *args)
-        actual = capture_stdout { Term.send(:"#{seq}!", *args) }
+        expected = T.unsafe(Term).send(seq, *args)
+        actual = capture_stdout { T.unsafe(Term).send(:"#{seq}!", *args) }
         assert_equal(expected, actual)
       end
     end
