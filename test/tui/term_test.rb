@@ -5,7 +5,6 @@ require('stringio')
 
 module TUI
   class TermTest < Minitest::Test
-
     def check(seq, actual)
       assert_equal(Term::CSI, actual[0..1])
       assert_equal(seq, actual[2..-1])

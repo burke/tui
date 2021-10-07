@@ -9,4 +9,6 @@ module TUI
 
   autoload(:Color, 'tui/color')
   autoload(:Term,  'tui/term')
+  autoload(:Profile,  'tui/profile')
+  autoload(:ANSIColors,  'tui/ansi_colors') # TODO: rename?
 end
