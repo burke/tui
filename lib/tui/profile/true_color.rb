@@ -1,4 +1,4 @@
-# typed: false
+# typed: strict
 # frozen_string_literal: true
 require('tui')
 
@@ -8,19 +8,19 @@ module TUI
       extend(T::Sig)
       extend(Profile)
 
-      sig { override.params(c: TUI::Color).returns(TUI::Color) }
+      sig { override.params(c: TUI::Color).returns(Color::RGBColor) }
       def self.convert(c)
-        Color.new(0.0, 0.0, 0.0) # TODO
+        Color::RGBColor.new(0.0, 0.0, 0.0) # TODO
       end
 
-      sig { override.params(s: String).returns(TUI::Color) }
+      sig { override.params(s: String).returns(Color::RGBColor) }
       def self.color(s)
-        Color.new(0.0, 0.0, 0.0) # TODO
+        Color::RGBColor.new(0.0, 0.0, 0.0) # TODO
       end
 
-      sig { override.params(c: TUI::Color).returns(TUI::Color) }
+      sig { override.params(c: TUI::Color).returns(Color::RGBColor) }
       def self.from_color(c)
-        Color.new(0.0, 0.0, 0.0) # TODO
+        Color::RGBColor.new(0.0, 0.0, 0.0) # TODO
       end
     end
   end

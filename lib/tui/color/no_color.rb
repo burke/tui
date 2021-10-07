@@ -3,8 +3,8 @@
 require('tui')
 
 module TUI
-  module Color
-    class NoColor < Base
+  class Color
+    class NoColor < Color
       extend(T::Sig)
 
       sig { override.returns(String) }

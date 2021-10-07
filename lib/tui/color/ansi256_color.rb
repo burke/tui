@@ -2,11 +2,9 @@
 # frozen_string_literal: true
 require('tui')
 
-require('tui/color/ansi_palette')
-
 module TUI
-  module Color
-    class ANSI256Color < Base
+  class Color
+    class ANSI256Color < Color
       extend(T::Sig)
 
       sig { params(n: Integer).void }

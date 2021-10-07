@@ -1,14 +1,24 @@
-# typed: ignore
+# typed: strict
 # frozen_string_literal: true
 require('tui')
 
 module TUI
-  module Color
+  class Color
     extend(T::Sig)
+    extend(T::Helpers)
+    abstract!
+
+    sig { abstract.returns(String) }
+    def hex; end
+
+    sig { abstract.returns(String) }
+    def sequence_fg; end
+
+    sig { abstract.returns(String) }
+    def sequence_bg; end
 
     autoload(:ANSI256Color, 'tui/color/ansi256_color')
     autoload(:ANSIColor,    'tui/color/ansi_color')
-    autoload(:Base,         'tui/color/base')
     autoload(:NoColor,      'tui/color/no_color')
     autoload(:RGBColor,     'tui/color/rgb_color')
 
@@ -26,6 +36,5 @@ module TUI
 
     #   RGBColor.new(rgb[0], rgb[1], rgb[2])
     # end
-
   end
 end

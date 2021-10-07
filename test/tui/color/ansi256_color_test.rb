@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Color
+  class Color
     class ANSI256ColorTest < Minitest::Test
       def test_ansi256_colors
         assert_equal('#000000', ANSI256Color.new(0).hex)

@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Color
+  class Color
     class RGBColorTest < Minitest::Test
       def test_rgb_colors
         assert_equal('#000000', RGBColor.new(0.0, 0.0, 0.0).hex)

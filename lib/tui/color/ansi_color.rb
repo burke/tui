@@ -3,8 +3,8 @@
 require('tui')
 
 module TUI
-  module Color
-    class ANSIColor < Color::Base
+  class Color
+    class ANSIColor < Color
       extend(T::Sig)
 
       FOREGROUND = 30

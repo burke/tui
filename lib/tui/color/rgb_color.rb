@@ -3,8 +3,8 @@
 require('tui')
 
 module TUI
-  module Color
-    class RGBColor < Base
+  class Color
+    class RGBColor < Color
       extend(T::Sig)
 
       sig { params(r: Float, g: Float, b: Float).void }
