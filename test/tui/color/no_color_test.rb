@@ -6,9 +6,11 @@ module TUI
   class Color
     class NoColorTest < Minitest::Test
       def test_no_color
-        assert_equal('', NoColor.new.hex)
-        assert_equal('', NoColor.new.sequence_fg)
-        assert_equal('', NoColor.new.sequence_bg)
+        n = NoColor.new
+        assert_equal('', n.hex)
+        assert_equal('', n.sequence_fg)
+        assert_equal('', n.sequence_bg)
+        assert_equal(n, n.to_rgb)
       end
     end
   end

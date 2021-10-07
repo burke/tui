@@ -11,6 +11,8 @@ module TUI
 
         assert_equal('38;5;200', ANSI256Color.new(200).sequence_fg)
         assert_equal('48;5;158', ANSI256Color.new(158).sequence_bg)
+
+        assert_equal(RGBColor.new(1.0, 0.0, 0.0), ANSI256Color.new(9).to_rgb)
       end
 
       def test_bounds_checking

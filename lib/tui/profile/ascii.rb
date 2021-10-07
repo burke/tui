@@ -17,11 +17,6 @@ module TUI
       def self.color(s)
         Color::NoColor.new
       end
-
-      sig { override.params(c: TUI::Color).returns(TUI::Color::NoColor) }
-      def self.from_color(c)
-        Color::NoColor.new
-      end
     end
   end
 end

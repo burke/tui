@@ -19,9 +19,6 @@ module TUI
     sig { abstract.params(s: String).returns(Color) }
     def color(s); end
 
-    sig { abstract.params(c: Color).returns(Color) }
-    def from_color(c); end
-
     sig { returns(Profile) }
     def self.current
       return(Profile::ASCII) unless $stdout.tty?

@@ -11,6 +11,9 @@ module TUI
 
         assert_equal('38;2;255;255;255', RGBColor.new(1.0, 1.0, 1.0).sequence_fg)
         assert_equal('48;2;128;128;128', RGBColor.new(0.5, 0.5, 0.5).sequence_bg)
+
+        assert_equal(RGBColor.new(0.5, 0.5, 0.5), RGBColor.new(0.5, 0.5, 0.5).to_rgb)
+        refute_equal(RGBColor.new(1.0, 0.5, 0.5), RGBColor.new(0.5, 0.5, 0.5).to_rgb)
       end
 
       def test_bounds_checking

@@ -7,6 +7,13 @@ module TUI
     class RGBColor < Color
       extend(T::Sig)
 
+      sig { returns(Float) }
+      attr_reader(:r)
+      sig { returns(Float) }
+      attr_reader(:g)
+      sig { returns(Float) }
+      attr_reader(:b)
+
       sig { params(r: Float, g: Float, b: Float).void }
       def initialize(r, g, b)
         if r < 0.0 || r > 1.0 || g < 0.0 || g > 1.0 || b < 0.0 || b > 1.0
@@ -16,6 +23,11 @@ module TUI
         @g = g
         @b = b
         super()
+      end
+
+      sig { params(other: T.untyped).returns(T::Boolean) }
+      def ==(other)
+        self.class == other.class && r == other.r && g == other.g && b == other.b
       end
 
       sig { override.returns(String) }
@@ -36,6 +48,11 @@ module TUI
       sig { override.returns(String) }
       def sequence_bg
         sequence('48')
+      end
+
+      sig { override.returns(RGBColor) }
+      def to_rgb
+        self
       end
 
       private

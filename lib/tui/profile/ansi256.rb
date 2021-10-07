@@ -17,11 +17,6 @@ module TUI
       def self.color(s)
         Color::ANSI256Color.new(0)
       end
-
-      sig { override.params(c: Color).returns(Color::ANSI256Color) }
-      def self.from_color(c)
-        Color::ANSI256Color.new(0)
-      end
     end
   end
 end

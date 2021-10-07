@@ -21,6 +21,11 @@ module TUI
       def sequence_bg
         ''
       end
+
+      sig { override.returns(NoColor) }
+      def to_rgb
+        self
+      end
     end
   end
 end
