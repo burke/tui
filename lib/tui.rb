@@ -7,8 +7,7 @@ module TUI
   Error = Class.new(StandardError)
   ROOT = T.let(File.expand_path('..', __dir__), String)
 
-  autoload(:Color, 'tui/color')
-  autoload(:Term,  'tui/term')
-  autoload(:Profile,  'tui/profile')
-  autoload(:ANSIColors,  'tui/ansi_colors') # TODO: rename?
+  autoload(:Color,   'tui/color')
+  autoload(:Term,    'tui/term')
+  autoload(:Profile, 'tui/profile')
 end

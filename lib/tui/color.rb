@@ -5,10 +5,12 @@ require('tui')
 module TUI
   module Color
     extend(T::Sig)
-    extend(T::Generic)
-    interface!
 
-    autoload(:NoColor, 'tui/color/no_color')
+    autoload(:ANSIColor,    'tui/color/ansi_color')
+    autoload(:ANSI256Color, 'tui/color/ansi256_color')
+    autoload(:Base,         'tui/color/base')
+    autoload(:NoColor,      'tui/color/no_color')
+    autoload(:TrueColor,    'tui/color/true_color')
 
     sig { params(hex: String).returns(Color) }
     def self.from_hex(hex)
@@ -24,6 +26,7 @@ module TUI
 
       RGBColor.new(rgb[0], rgb[1], rgb[2])
     end
+
 
     # sig { returns(String) }
     # def hex

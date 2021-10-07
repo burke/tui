@@ -4,7 +4,7 @@ require('tui')
 
 module TUI
   module Color
-    class NoColor
+    class TrueColor
       extend(T::Sig)
       extend(Color)
 
