@@ -12,6 +12,7 @@ module TUI
       def initialize(n)
         raise(ArgumentError, "invalid color index: #{n}") unless n >= 0 && n < 16
         @n = n
+        super
       end
 
       sig { override.returns(String) }
@@ -19,14 +20,26 @@ module TUI
         T.must(PALETTE[@n]) # verified in initialize
       end
 
+      FOREGROUND = 30
+      BACKGROUND = 40
+      BRIGHT = 60
+
       sig { override.returns(String) }
       def sequence_fg
-        'wtf'
+        if @n < 8
+          (FOREGROUND + @n).to_s
+        else
+          (FOREGROUND + BRIGHT + @n - 8).to_s
+        end
       end
 
       sig { override.returns(String) }
       def sequence_bg
-        ''
+        if @n < 8
+          (BACKGROUND + @n).to_s
+        else
+          (BACKGROUND + BRIGHT + @n - 8).to_s
+        end
       end
 
       PALETTE = T.let(%w(

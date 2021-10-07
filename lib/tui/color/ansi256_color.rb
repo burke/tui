@@ -13,6 +13,7 @@ module TUI
       def initialize(n)
         raise(ArgumentError, "invalid color index: #{n}") unless n >= 0 && n < 256
         @n = n
+        super
       end
 
       sig { override.returns(String) }

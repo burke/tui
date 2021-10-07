@@ -17,3 +17,8 @@ Style/MethodCallWithArgsParentheses:
   AllowParenthesesInStringInterpolation: true
   EnforcedStyle: require_parentheses
 
+Style/SymbolArray:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false

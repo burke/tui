@@ -10,7 +10,7 @@ module TUI
     autoload(:ANSIColor,    'tui/color/ansi_color')
     autoload(:Base,         'tui/color/base')
     autoload(:NoColor,      'tui/color/no_color')
-    autoload(:TrueColor,    'tui/color/true_color')
+    autoload(:RGBColor,     'tui/color/rgb_color')
 
     sig { params(hex: String).returns(Color) }
     def self.from_hex(hex)
@@ -26,7 +26,6 @@ module TUI
 
       RGBColor.new(rgb[0], rgb[1], rgb[2])
     end
-
 
     # sig { returns(String) }
     # def hex
@@ -44,6 +43,5 @@ module TUI
     #   @g = g
     #   @b = b
     # end
-
   end
 end
