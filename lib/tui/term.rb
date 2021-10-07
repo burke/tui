@@ -9,6 +9,16 @@ module TUI
     CSI = "\x1b["
     SGR = 'm'
 
+    RESET_SEQ     = '0'
+    BOLD_SEQ      = '1'
+    FAINT_SEQ     = '2'
+    ITALIC_SEQ    = '3'
+    UNDERLINE_SEQ = '4'
+    BLINK_SEQ     = '5'
+    REVERSE_SEQ   = '7'
+    CROSS_OUT_SEQ = '9'
+    OVERLINE_SEQ  = '53'
+
     CURSOR_UP_SEQ               = '%dA'
     CURSOR_DOWN_SEQ             = '%dB'
     CURSOR_FORWARD_SEQ          = '%dC'
@@ -108,41 +118,41 @@ module TUI
 
       # moves the cursor up a given number of lines
       sig { params(n: Integer).void }
-      def cursor_up!(n); print(cursor_up(n)) end
+      def cursor_up!(n = 1); print(cursor_up(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_up(n); format(CSI + CURSOR_UP_SEQ, n) end
+      def cursor_up(n = 1); format(CSI + CURSOR_UP_SEQ, n) end
 
       # moves the cursor down a given number of lines
       sig { params(n: Integer).void }
-      def cursor_down!(n); print(cursor_down(n)) end
+      def cursor_down!(n = 1); print(cursor_down(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_down(n); format(CSI + CURSOR_DOWN_SEQ, n) end
+      def cursor_down(n = 1); format(CSI + CURSOR_DOWN_SEQ, n) end
 
       # moves the cursor forward a given number of cells
       sig { params(n: Integer).void }
-      def cursor_forward!(n); print(cursor_forward(n)) end
+      def cursor_forward!(n = 1); print(cursor_forward(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_forward(n); format(CSI + CURSOR_FORWARD_SEQ, n) end
+      def cursor_forward(n = 1); format(CSI + CURSOR_FORWARD_SEQ, n) end
 
       # moves the cursor backwards a given number of cells
       sig { params(n: Integer).void }
-      def cursor_back!(n); print(cursor_back(n)) end
+      def cursor_back!(n = 1); print(cursor_back(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_back(n); format(CSI + CURSOR_BACK_SEQ, n) end
+      def cursor_back(n = 1); format(CSI + CURSOR_BACK_SEQ, n) end
 
       # moves the cursor down a given number of lines and places it at the
       # beginning of the line.
       sig { params(n: Integer).void }
-      def cursor_next_line!(n); print(cursor_next_line(n)) end
+      def cursor_next_line!(n = 1); print(cursor_next_line(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_next_line(n); format(CSI + CURSOR_NEXT_LINE_SEQ, n) end
+      def cursor_next_line(n = 1); format(CSI + CURSOR_NEXT_LINE_SEQ, n) end
 
       # moves the cursor up a given number of lines and places it at the
       # beginning of the line.
       sig { params(n: Integer).void }
-      def cursor_prev_line!(n); print(cursor_prev_line(n)) end
+      def cursor_prev_line!(n = 1); print(cursor_prev_line(n)) end
       sig { params(n: Integer).returns(String) }
-      def cursor_prev_line(n); format(CSI + CURSOR_PREVIOUS_LINE_SEQ, n) end
+      def cursor_prev_line(n = 1); format(CSI + CURSOR_PREVIOUS_LINE_SEQ, n) end
 
       # clears the current line.
       sig { void }
@@ -164,31 +174,41 @@ module TUI
 
       # clears a given number of lines.
       sig { params(n: Integer).void }
-      def clear_lines!(n); print(clear_lines(n)) end
+      def clear_lines!(n = 1); print(clear_lines(n)) end
       sig { params(n: Integer).returns(String) }
-      def clear_lines(n)
+      def clear_lines(n = 1)
         clear_line = format(CSI + ERASE_LINE_SEQ, 2)
         cursor_up = format(CSI + CURSOR_UP_SEQ, 1)
         clear_line + (cursor_up + clear_line) * n
       end
 
+      sig { params(n: Integer).void }
+      def scroll_up!(n = 1); print(scroll_up(n)) end
+      sig { params(n: Integer).returns(String) }
+      def scroll_up(n = 1); format(CSI + SCROLL_UP_SEQ, n) end
+
+      sig { params(n: Integer).void }
+      def scroll_down!(n = 1); print(scroll_down(n)) end
+      sig { params(n: Integer).returns(String) }
+      def scroll_down(n = 1); format(CSI + SCROLL_DOWN_SEQ, n) end
+
       # sets the scrolling region of the terminal.
       sig { params(top: Integer, bottom: Integer).void }
-      def change_scrolling_region!(top, bottom); change_scrolling_region(top, bottom) end
+      def change_scrolling_region!(top, bottom); print(change_scrolling_region(top, bottom)) end
       sig { params(top: Integer, bottom: Integer).returns(String) }
       def change_scrolling_region(top, bottom); format(CSI + CHANGE_SCROLLING_REGION_SEQ, top, bottom) end
 
       # inserts the given number of lines at the top of the scrollable region,
       # pushing lines below down.
       sig { params(n: Integer).void }
-      def insert_lines!(n); insert_lines(n) end
+      def insert_lines!(n); print(insert_lines(n)) end
       sig { params(n: Integer).returns(String) }
       def insert_lines(n); format(CSI + INSERT_LINE_SEQ, n) end
 
       # deletes the given number of lines, pulling any lines in the scrollable
       # region below up.
       sig { params(n: Integer).void }
-      def delete_lines!(n); delete_lines(n) end
+      def delete_lines!(n); print(delete_lines(n)) end
       sig { params(n: Integer).returns(String) }
       def delete_lines(n); format(CSI + DELETE_LINE_SEQ, n) end
 
@@ -202,7 +222,7 @@ module TUI
       sig { void }
       def disable_mouse_press!; print(disable_mouse_press) end
       sig { returns(String) }
-      def disable_mouse_press; CSI + ENABLE_MOUSE_PRESS_SEQ end
+      def disable_mouse_press; CSI + DISABLE_MOUSE_PRESS_SEQ end
 
       # enables Mouse Tracking mode.
       sig { void }
