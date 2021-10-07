@@ -4,9 +4,8 @@ require('tui')
 
 module TUI
   module Color
-    class TrueColor
+    class TrueColor < Base
       extend(T::Sig)
-      extend(Color)
 
       sig { override.returns(String) }
       def to_s

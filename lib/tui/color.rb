@@ -6,8 +6,8 @@ module TUI
   module Color
     extend(T::Sig)
 
-    autoload(:ANSIColor,    'tui/color/ansi_color')
     autoload(:ANSI256Color, 'tui/color/ansi256_color')
+    autoload(:ANSIColor,    'tui/color/ansi_color')
     autoload(:Base,         'tui/color/base')
     autoload(:NoColor,      'tui/color/no_color')
     autoload(:TrueColor,    'tui/color/true_color')

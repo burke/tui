@@ -6,9 +6,8 @@ require('tui/color/ansi_palette')
 
 module TUI
   module Color
-    class ANSI256Color
+    class ANSI256Color < Base
       extend(T::Sig)
-      extend(Color)
 
       sig { params(n: Integer).void }
       def initialize(n)
