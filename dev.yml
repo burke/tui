@@ -1,0 +1,17 @@
+name: tui
+
+up:
+  - homebrew:
+      - fswatch
+  - ruby: 3.0.2
+  - bundler
+
+commands:
+  style: bundle exec rubocop -D
+  typecheck: bundle exec srb
+  test: bundle exec rake test
+  watch:
+    subcommands:
+      style:     fswatch -e coverage -e "/\." -o . | xargs -n1 -I@ bundle exec rubocop -D
+      typecheck: fswatch -e coverage -e "/\." -o . | xargs -n1 -I@ bundle exec srb
+      test:      fswatch -e coverage -e "/\." -o . | xargs -n1 -I@ bundle exec rake test
