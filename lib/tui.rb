@@ -8,4 +8,5 @@ module TUI
   ROOT = T.let(File.expand_path('..', __dir__), String)
 
   autoload(:Color, 'tui/color')
+  autoload(:Term,  'tui/term')
 end
