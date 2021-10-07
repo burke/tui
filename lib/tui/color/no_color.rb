@@ -22,9 +22,9 @@ module TUI
         ''
       end
 
-      sig { override.returns(NoColor) }
+      sig { override.returns(RGBColor) }
       def to_rgb
-        self
+        raise
       end
     end
   end

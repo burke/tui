@@ -10,7 +10,7 @@ module TUI
         assert_equal('', n.hex)
         assert_equal('', n.sequence_fg)
         assert_equal('', n.sequence_bg)
-        assert_equal(n, n.to_rgb)
+        assert_raises { n.to_rgb }
       end
     end
   end

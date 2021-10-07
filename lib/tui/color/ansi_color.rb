@@ -46,11 +46,6 @@ module TUI
         Color.from_hex(hex)
       end
 
-      PALETTE = T.let(%w(
-        #000000 #800000 #008000 #808000 #000080 #800080 #008080 #c0c0c0
-        #808080 #ff0000 #00ff00 #ffff00 #0000ff #ff00ff #00ffff #ffffff
-      ).freeze, T::Array[String])
-
       BLACK          = T.let(new(0), ANSIColor)
       RED            = T.let(new(1), ANSIColor)
       GREEN          = T.let(new(2), ANSIColor)
