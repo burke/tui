@@ -16,6 +16,15 @@ module TUI
         refute_equal(RGBColor.new(1.0, 0.5, 0.5), RGBColor.new(0.5, 0.5, 0.5).to_rgb)
       end
 
+      def test_to_ansi
+        16.times do |index|
+          assert_equal(
+            ANSIColor.new(index),
+            ANSIColor.new(index).to_rgb.to_ansi,
+          )
+        end
+      end
+
       def test_to_ansi256
         # these results are just descriptive of what I got when I made up some
         # stuff. If you are looking at this going "wait, why is it this value
@@ -31,8 +40,8 @@ module TUI
           # values we have for the lower 16.
           next if index < 16
           assert_equal(
-            ANSI256Color.new(index).hex,
-            ANSI256Color.new(index).to_rgb.to_ansi256.hex,
+            ANSI256Color.new(index),
+            ANSI256Color.new(index).to_rgb.to_ansi256,
           )
         end
       end
