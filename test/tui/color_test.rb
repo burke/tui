@@ -12,13 +12,9 @@ module TUI
     end
 
     def test_to_ansi
+      assert_equal('#ff0000', Color.from_hex('#fe0000').to_ansi.hex)
       skip
-      # assert_equal('#ff0000', Color.from_hex('#fe0000').to_ansi.hex)
-      $d=1
-
       assert_equal('#008080', Color.from_hex('#123456').to_ansi.hex)
-    ensure
-      $d=nil
     end
   end
 end

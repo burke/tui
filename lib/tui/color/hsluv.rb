@@ -5,17 +5,9 @@ require('tui')
 module TUI
   class Color
     # copied from https://github.com/hsluv/hsluv-ruby (which is under MIT license)
-    # with minimal modification.
+    # with some modification.
     module HSLuv
-      extend(T::Sig)
       extend(self)
-
-      sig { params(r: Float, g: Float, b: Float).returns([Float, Float, Float]) }
-      def from_rgb(r, g, b)
-        rgb_to_hsluv(r, g, b)
-      end
-
-      private
 
       M = [
         [3.240969941904521, -1.537383177570093, -0.498610760293],
@@ -29,7 +21,6 @@ module TUI
         [0.019330818715591, 0.11919477979462, 0.95053215224966],
       ]
 
-      REF_X = 0.95045592705167
       REF_Y = 1.0
       REF_Z = 1.089057750759878
       REF_U = 0.19783000664283
@@ -38,48 +29,19 @@ module TUI
       EPSILON = 0.0088564516
 
       def rgb_to_hsluv(r, g, b)
-        lch_to_hsluv(rgb_to_lch(r, g, b))
-      end
-
-      def hsluv_to_hex(h, s, l)
-        rgb_to_hex(*hsluv_to_rgb(h, s, l))
-      end
-
-      def hpluv_to_hex(h, s, l)
-        rgb_to_hex(*hpluv_to_rgb(h, s, l))
+        l, c, h = rgb_to_lch(r, g, b)
+        lch_to_hsluv(l, c, h)
       end
 
       def hex_to_hsluv(hex)
-        rgb_to_hsluv(*hex_to_rgb(hex))
-      end
-
-      def hex_to_hpluv(hex)
-        rgb_to_hpluv(*hex_to_rgb(hex))
-      end
-
-      def hsluv_to_rgb(h, s, l)
-        xyz_to_rgb(luv_to_xyz(lch_to_luv(hsluv_to_lch([h, s, l]))))
-      end
-
-      def hpluv_to_rgb(h, s, l)
-        lch_to_rgb(*hpluv_to_lch([h, s, l]))
-      end
-
-      def rgb_to_hpluv(r, g, b)
-        lch_to_hpluv(rgb_to_lch(r, g, b))
-      end
-
-      def lch_to_rgb(l, c, h)
-        xyz_to_rgb(luv_to_xyz(lch_to_luv([l, c, h])))
+        r, g, b = hex_to_rgb(hex)
+        rgb_to_hsluv(r, g, b)
       end
 
       def rgb_to_lch(r, g, b)
-        luv_to_lch(xyz_to_luv(rgb_to_xyz([r, g, b])))
-      end
-
-      def rgb_to_hex(r, g, b)
-        r, g, b = rgb_prepare([r, g, b])
-        Kernel.format('#%02x%02x%02x', r, g, b)
+        x, y, z = rgb_to_xyz(r, g, b)
+        l, u, v = xyz_to_luv(x, y, z)
+        luv_to_lch(l, u, v)
       end
 
       def hex_to_rgb(hex)
@@ -87,15 +49,12 @@ module TUI
         [].tap { |arr| hex.split('').each_slice(2) { |block| arr << block.join.to_i(16) / 255.0 } }
       end
 
-      ###
-
-      def rgb_to_xyz(arr)
-        rgbl = arr.map { |val| to_linear(val) }
+      def rgb_to_xyz(x, y, z)
+        rgbl = [x, y, z].map { |val| to_linear(val) }
         M_INV.map { |i| dot_product(i, rgbl) }
       end
 
-      def xyz_to_luv(arr)
-        x, y, z = arr
+      def xyz_to_luv(x, y, z)
         l = f(y)
 
         return [0.0, 0.0, 0.0] if [x, y, z, 0.0].uniq.length == 1 || l == 0.0
@@ -108,8 +67,7 @@ module TUI
         [l, u, v]
       end
 
-      def luv_to_lch(arr)
-        l, u, v = arr
+      def luv_to_lch(l, u, v)
         c = ((u**2) + (v**2))**(1 / 2.0)
         hrad = Math.atan2(v, u)
         h = radians_to_degrees(hrad)
@@ -117,114 +75,26 @@ module TUI
         [l, c, h]
       end
 
-      def lch_to_hsluv(arr)
-        l, c, h = arr
+      def lch_to_hsluv(l, c, h)
         return [h, 0.0, 100.0] if l > 99.9999999
         return [h, 0.0, 0.0] if l < 0.00000001
 
-        mx = max_chroma_for(l, h)
-        s = c / mx * 100.0
+        s = c / max_chroma(l, h) * 100.0
 
         [h, s, l]
       end
-
-      def lch_to_hpluv(arr)
-        l, c, h = arr
-
-        return [h, 0.0, 100.0] if l > 99.9999999
-        return [h, 0.0, 0.0] if l < 0.00000001
-
-        mx = max_safe_chroma_for(l)
-        s = c / mx * 100.0
-
-        [h, s, l]
-      end
-
-      ###
-
-      def xyz_to_rgb(arr)
-        xyz = M.map { |i| dot_product(i, arr) }
-        xyz.map { |i| from_linear(i) }
-      end
-
-      def luv_to_xyz(arr)
-        l, u, v = arr
-
-        return [0.0, 0.0, 0.0] if l == 0
-
-        var_y = f_inv(l)
-        var_u = u / (13.0 * l) + REF_U
-        var_v = v / (13.0 * l) + REF_V
-
-        y = var_y * REF_Y
-        x = 0.0 - (9.0 * y * var_u) / ((var_u - 4.0) * var_v - var_u * var_v)
-        z = (9.0 * y - (15.0 * var_v * y) - (var_v * x)) / (3.0 * var_v)
-
-        [x, y, z]
-      end
-
-      def lch_to_luv(arr)
-        l, c, h = arr
-
-        hrad = degrees_to_radians(h)
-        u = Math.cos(hrad) * c
-        v = Math.sin(hrad) * c
-
-        [l, u, v]
-      end
-
-      def hsluv_to_lch(arr)
-        h, s, l = arr
-
-        return [100, 0.0, h] if l > 99.9999999
-        return [0.0, 0.0, h] if l < 0.00000001
-
-        mx = max_chroma_for(l, h)
-        c = mx / 100.0 * s
-
-        [l, c, h]
-      end
-
-      def hpluv_to_lch(arr)
-        h, s, l = arr
-
-        return [100, 0.0, h] if l > 99.9999999
-        return [0.0, 0.0, h] if l < 0.00000001
-
-        mx = max_safe_chroma_for(l)
-        c = mx / 100.0 * s
-
-        [l, c, h]
-      end
-
-      ###
 
       def radians_to_degrees(rad)
         rad * 180.0 / Math::PI
       end
 
-      def degrees_to_radians(degrees)
-        degrees * Math::PI / 180.0
-      end
-
-      def max_chroma_for(l, h)
+      def max_chroma(l, h)
         hrad = h / 360.0 * Math::PI * 2.0
         lengths = []
 
         get_bounds(l).each do |line|
           l = length_of_ray_until_intersect(hrad, line)
           lengths << l if l
-        end
-
-        lengths.min
-      end
-
-      def max_safe_chroma_for(l)
-        lengths = []
-
-        get_bounds(l).each do |m1, b1|
-          x = intersect_line_line([m1, b1], [-1.0 / m1, 0.0])
-          lengths << distance_from_pole([x, b1 + x * m1])
         end
 
         lengths.min
@@ -254,41 +124,16 @@ module TUI
         length
       end
 
-      def intersect_line_line(line1, line2)
-        (line1[1] - line2[1]) / (line2[0] - line1[0])
-      end
-
-      def distance_from_pole(point)
-        Math.sqrt(point[0]**2 + point[1]**2)
-      end
-
       def f(t)
         t > EPSILON ? 116 * ((t / REF_Y)**(1.0 / 3.0)) - 16.0 : t / REF_Y * KAPPA
-      end
-
-      def f_inv(t)
-        t > 8 ? REF_Y * ((t + 16.0) / 116.0)**3.0 : REF_Y * t / KAPPA
       end
 
       def to_linear(c)
         c > 0.04045 ? ((c + 0.055) / 1.055)**2.4 : c / 12.92
       end
 
-      def from_linear(c)
-        c <= 0.0031308 ? 12.92 * c : (1.055 * (c**(1.0 / 2.4)) - 0.055)
-      end
-
       def dot_product(a, b)
         a.zip(b).map { |i, j| i * j }.inject(:+)
-      end
-
-      def rgb_prepare(arr)
-        arr.map! do |ch|
-          ch = ch.round(3)
-          ch = [0, ch].max
-          ch = [1, ch].min
-          (ch * 255).round
-        end
       end
     end
   end

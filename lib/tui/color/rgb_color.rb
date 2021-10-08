@@ -61,7 +61,10 @@ module TUI
         h2, s2, l2 = other.send(:hsluv)
         puts(">>#{[h1,s1,l1].inspect}") if $d
         puts("<<#{[h2,s2,l2].inspect}") if $d
-        Math.sqrt(((h1 - h2) / 100.0)**2 + (s1 - s2)**2 + (l1 - l2)**2)
+        Math.sqrt(
+          ((h1 - h2) / 100.0)**2 +\
+          (s1 - s2)**2 +\
+          (l1 - l2)**2)
       end
 
       private
@@ -69,7 +72,7 @@ module TUI
       sig { returns([Float, Float, Float]) }
       def hsluv
         return(@hsluv) if @hsluv
-        @hsluv = T.let(HSLuv.from_rgb(@r, @g, @b), T.nilable([Float, Float, Float]))
+        @hsluv = T.let(HSLuv.rgb_to_hsluv(@r, @g, @b), T.nilable([Float, Float, Float]))
         T.must(@hsluv)
       end
 
