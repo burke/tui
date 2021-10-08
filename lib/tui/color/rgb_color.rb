@@ -73,7 +73,7 @@ module TUI
         [23, [0, gi.round].max].min
       end
 
-      sig { returns(ANSI256Color) }
+      sig { override.returns(ANSI256Color) }
       def to_ansi256
         # Calculate the nearest 0-based color index at 16..231
         r = v2ci(@r) # 0..5 each
@@ -107,6 +107,13 @@ module TUI
         else
           ANSI256Color.new(232 + gray_idx)
         end
+      end
+
+      sig { override.returns(ANSIColor) }
+      def to_ansi
+        # TODO: test this better
+        index = T.must(16.times.min_by { |i| distance(ANSIColor.new(i).to_rgb) })
+        ANSIColor.new(index)
       end
 
       # termenv uses HSLuv distance, but converting to HSLuv is fairly

@@ -22,17 +22,14 @@ module TUI
     autoload(:NoColor,      'tui/color/no_color')
     autoload(:RGBColor,     'tui/color/rgb_color')
 
-    sig { returns(ANSIColor) }
-    def to_ansi
-      exact = to_rgb
-      candidates = (0...16).map { |i| ANSIColor.new(i) }
-      T.must(candidates.min_by do |c|
-        c.to_rgb.distance(exact).round(1)
-      end)
-    end
-
     sig { abstract.returns(RGBColor) }
     def to_rgb; end
+
+    sig { abstract.returns(ANSI256Color) }
+    def to_ansi256; end
+
+    sig { abstract.returns(ANSIColor) }
+    def to_ansi; end
 
     sig { params(str: String).returns(RGBColor) }
     def self.from_xterm(str)

@@ -26,6 +26,18 @@ module TUI
         self.class == other.class && index == other.index
       end
 
+      sig { override.returns(ANSIColor) }
+      def to_ansi
+        self
+      end
+
+      sig { override.returns(ANSI256Color) }
+      def to_ansi256
+        # we could try to cast into the higher space and stay out of the bottom
+        # 16, but I think this is probably the most appropriate behaviour?
+        ANSI256Color.new(@index)
+      end
+
       sig { override.returns(String) }
       def hex
         T.must(PALETTE[@index]) # verified in initialize

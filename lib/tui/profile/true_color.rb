@@ -10,12 +10,12 @@ module TUI
 
       sig { override.params(c: TUI::Color).returns(Color::RGBColor) }
       def self.convert(c)
-        Color::RGBColor.new(0.0, 0.0, 0.0) # TODO
+        c.to_rgb
       end
 
-      sig { override.params(s: String).returns(Color::RGBColor) }
-      def self.color(s)
-        Color::RGBColor.new(0.0, 0.0, 0.0) # TODO
+      sig { override.params(hex: String).returns(Color::RGBColor) }
+      def self.color(hex)
+        convert(Color.from_hex(hex))
       end
     end
   end

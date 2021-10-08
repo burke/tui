@@ -16,8 +16,8 @@ module TUI
     sig { abstract.params(c: Color).returns(Color) }
     def convert(c); end
 
-    sig { abstract.params(s: String).returns(Color) }
-    def color(s); end
+    sig { abstract.params(hex: String).returns(Color) }
+    def color(hex); end
 
     sig { params(term: T.nilable(String), colorterm: T.nilable(String), stdout: IO).returns(Profile) }
     def self.current(term: ENV['TERM'], colorterm: ENV['COLORTERM'], stdout: STDOUT)

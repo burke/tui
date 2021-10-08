@@ -22,6 +22,16 @@ module TUI
         ''
       end
 
+      sig { override.returns(ANSIColor) }
+      def to_ansi
+        raise
+      end
+
+      sig { override.returns(ANSI256Color) }
+      def to_ansi256
+        raise
+      end
+
       sig { override.returns(RGBColor) }
       def to_rgb
         raise

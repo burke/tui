@@ -22,6 +22,19 @@ module TUI
         self.class == other.class && index == other.index
       end
 
+      sig { override.returns(ANSI256Color) }
+      def to_ansi256
+        self
+      end
+
+      sig { override.returns(ANSIColor) }
+      def to_ansi
+        # TODO: Test this better.
+        rgb = to_rgb
+        index = T.must(16.times.min_by { |i| rgb.distance(ANSIColor.new(i).to_rgb) })
+        ANSIColor.new(index)
+      end
+
       sig { override.returns(String) }
       def hex
         T.must(PALETTE[@index]) # verified in initialize
