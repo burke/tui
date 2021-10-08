@@ -9,7 +9,7 @@ module TUI
 
       sig { override.returns(String) }
       def hex
-        ''
+        raise
       end
 
       sig { override.returns(String) }

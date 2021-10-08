@@ -13,8 +13,8 @@ module TUI
         Color::NoColor.new
       end
 
-      sig { override.params(s: String).returns(TUI::Color::NoColor) }
-      def self.color(s)
+      sig { override.params(hex: String).returns(TUI::Color::NoColor) }
+      def self.color(hex)
         Color::NoColor.new
       end
     end

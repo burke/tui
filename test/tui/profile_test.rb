@@ -5,7 +5,7 @@ require('pty')
 
 module TUI
   class ProfileTest < Minitest::Test
-    def test_profile
+    def test_profile_current
       tty, ttys = PTY.open
       ttys.close
 
