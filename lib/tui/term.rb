@@ -91,9 +91,9 @@ module TUI
         Color.from_xterm(color)
       end
 
-      sig { returns(T::Boolean) }
-      def dark_background?
-        background_color.luminance < 0.5
+      sig { params(color: Color).returns(T::Boolean) }
+      def dark_background?(color = background_color)
+        color.luminance < 0.5
       end
 
       sig { returns([Integer, Integer]) }
