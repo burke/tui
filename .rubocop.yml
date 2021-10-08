@@ -2,6 +2,8 @@ inherit_gem:
   rubocop-shopify: rubocop.yml
 
 AllCops:
+  Exclude:
+    - 'ext/*/extconf.rb'
   TargetRubyVersion: 3.0
 
 Style/StringLiterals:

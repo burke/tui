@@ -10,4 +10,5 @@ module TUI
   autoload(:Color,   'tui/color')
   autoload(:Term,    'tui/term')
   autoload(:Profile, 'tui/profile')
+  autoload(:VERSION, 'tui/version')
 end

@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    tui (0.0.1)
+      sorbet-runtime (~> 0.5.9155)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -94,8 +100,8 @@ DEPENDENCIES
   rubocop-shopify
   simplecov
   sorbet
-  sorbet-runtime
   tapioca
+  tui!
 
 BUNDLED WITH
    2.2.19
