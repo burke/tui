@@ -6,7 +6,7 @@ require('io/console')
 module TUI
   module Term
     module Query
-      Error = Class.new(StandardError)
+      Error = Class.new(TUI::Error)
 
       class << self
         extend(T::Sig)
