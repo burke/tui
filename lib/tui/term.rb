@@ -9,6 +9,7 @@ module TUI
 
     autoload(:ControlResponse, 'tui/term/control_response')
     autoload(:Query,           'tui/term/query')
+    autoload(:Style,           'tui/term/style')
 
     ESC = "\x1b"
     CSI = T.let(ESC + '[', String)
