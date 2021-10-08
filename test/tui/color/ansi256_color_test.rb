@@ -15,6 +15,12 @@ module TUI
         assert_equal(RGBColor.new(1.0, 0.0, 0.0), ANSI256Color.new(9).to_rgb)
       end
 
+      def test_conversions
+        c = ANSI256Color.new(200)
+        assert_equal(c, c.to_ansi256)
+        assert_equal('#ff00ff', c.to_ansi.hex)
+      end
+
       def test_bounds_checking
         ANSI256Color.new(0)
         ANSI256Color.new(255)

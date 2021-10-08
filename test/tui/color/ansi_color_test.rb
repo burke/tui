@@ -30,13 +30,10 @@ module TUI
         assert_equal(RGBColor.new(1.0, 0.0, 0.0), ANSIColor::BRIGHT_RED.to_rgb)
       end
 
-      def test_distance
-        # I haven't verified that these are correct but they look at least
-        # directionally correct.
-        # assert_in_delta(100, distance('#ffffff', '#000000'), 1)
-        # assert_in_delta(113, distance('#ff0000', '#000000'), 1)
-        # assert_in_delta(33, distance('#ff0000', '#660000'), 1)
-        # assert_in_delta(3, distance('#ff0000', '#ee0000'), 1)
+      def test_conversions
+        c = ANSIColor.new(2)
+        assert_equal(c, c.to_ansi)
+        assert_equal('#008000', c.to_ansi256.hex)
       end
 
       def test_bounds_checking
