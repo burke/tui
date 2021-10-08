@@ -10,6 +10,21 @@ module TUI
       assert_equal(seq, actual[2..-1])
     end
 
+    def test_background_color
+      Term::Query.expects(:osc).with(11).returns('rgb:1234/2345/3456')
+      assert_equal('#122334', Term.background_color.hex)
+    end
+
+    def test_foreground_color
+      Term::Query.expects(:osc).with(10).returns('rgb:aabb/ccdd/eeff')
+      assert_equal('#aaccee', Term.foreground_color.hex)
+    end
+
+    def test_cursor_position
+      Term::Query.expects(:dsr).with('R').returns([1, 1])
+      assert_equal([1, 1], Term.cursor_position)
+    end
+
     def test_escape_sequences
       check('0m',     Term.reset)
       check('?1049h', Term.alt_screen)

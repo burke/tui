@@ -8,8 +8,7 @@ module TUI
     extend(T::Sig)
 
     autoload(:ControlResponse, 'tui/term/control_response')
-
-    AttributeUnavailableError = Class.new(StandardError)
+    autoload(:Query,           'tui/term/query')
 
     ESC = "\x1b"
     CSI = T.let(ESC + '[', String)
@@ -80,26 +79,23 @@ module TUI
       extend(T::Sig)
 
       sig { returns(Color) }
-      def osc_query_foreground_color
-        color = osc_query(OSC_FOREGROUND_COLOR_CODE)
+      def foreground_color
+        color = Query.osc(OSC_FOREGROUND_COLOR_CODE)
         Color.from_xterm(color)
       end
 
       sig { returns(Color) }
-      def osc_query_background_color
-        color = osc_query(OSC_BACKGROUND_COLOR_CODE)
+      def background_color
+        color = Query.osc(OSC_BACKGROUND_COLOR_CODE)
         Color.from_xterm(color)
       end
 
       sig { returns([Integer, Integer]) }
       def cursor_position
-        unless (ansi_seq = dsr_query.detect { |els| els.code == 'R' })
-          raise(AttributeUnavailableError, 'failed to query cursor position')
-        end
+        # raises if unable
+        r, c = Query.dsr('R')
         # we could check that the length is 2 instead of leaning on sorbet-runtime
-        r = T.must(ansi_seq.args[0])
-        c = T.must(ansi_seq.args[1])
-        [r, c]
+        [T.must(r), T.must(c)]
       end
 
       # rubocop:disable Style/SingleLineMethods
@@ -315,44 +311,6 @@ module TUI
       def disable_mouse_all_motion; CSI + DISABLE_MOUSE_ALL_MOTION_SEQ end
 
       # rubocop:enable Style/SingleLineMethods
-
-      private
-
-      sig { returns(T::Array[ControlResponse::ANSISequence]) }
-      def dsr_query
-        cr = osc_dsr_query([])
-        cr.ansi_sequences
-      end
-
-      sig { params(attribute: Integer).returns(String) }
-      def osc_query(attribute)
-        cr = osc_dsr_query([attribute])
-        if (attr = cr.osc_attribute(attribute))
-          return attr
-        end
-        raise(AttributeUnavailableError, "failed to query OSC attribute #{attribute}")
-      end
-
-      sig { params(osc_attributes: T::Array[Integer]).returns(ControlResponse) }
-      def osc_dsr_query(osc_attributes)
-        response = STDIN.raw do
-          STDIN.noecho do
-            msg = +''
-            # first, send OSC query, which is ignored by terminals without support
-            osc_attributes.each do |attr|
-              msg << CSI + OSC + attr.to_s + ';?' + BEL
-            end
-            # then, query cursor position, even if the user didn't want it,
-            # because it's supported by ~all terminals and will make the
-            # readpartial call not hang when called on a terminal not
-            # supporting OSC, which will print nothing otherwise.
-            msg << CSI + DEVICE_STATUS_REPORT_SEQ
-            STDOUT.print(msg)
-            STDIN.readpartial(128)
-          end
-        end
-        ControlResponse.parse(response)
-      end
     end
   end
 end
