@@ -27,6 +27,11 @@ module TUI
       end
     end
 
+    sig { returns(Float) }
+    def luminance
+      to_rgb.luminance
+    end
+
     sig { abstract.returns(String) }
     def hex; end
 

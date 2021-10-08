@@ -4,6 +4,7 @@ inherit_gem:
 AllCops:
   Exclude:
     - 'ext/*/extconf.rb'
+    - 'examples/*'
   TargetRubyVersion: 3.0
 
 Style/StringLiterals:
