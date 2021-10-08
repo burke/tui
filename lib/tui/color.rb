@@ -36,6 +36,7 @@ module TUI
       Color.from_hex(hex)
     end
 
+    sig { params(str: String).returns(RGBColor) }
     def self.from_xterm(str)
       hex = str.sub(/^rgb:/, '').split('/').map { |c| c[0...2] }.join.prepend('#')
       from_hex(hex)
