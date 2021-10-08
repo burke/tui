@@ -13,8 +13,7 @@ module TUI
 
     def test_to_ansi
       assert_equal('#ff0000', Color.from_hex('#fe0000').to_ansi.hex)
-      skip
-      assert_equal('#008080', Color.from_hex('#123456').to_ansi.hex)
+      assert_equal('#000080', Color.from_hex('#123456').to_ansi.hex) # HSLuv would choose 008080
     end
   end
 end

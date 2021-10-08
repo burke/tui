@@ -55,26 +55,23 @@ module TUI
         self
       end
 
+      # termenv uses HSLuv distance, but converting to HSLuv is fairly
+      # expensive (and couldn't get code working properly for it after a few
+      # hours of effort)
+      #
+      # This is is a color distance algorithm developed by Thiadmer Riemersma.
+      # It uses RGB coordinates, but he claims it has similar results to
+      # CIELUV. This makes it both fast and accurate.
       sig { params(other: RGBColor).returns(Float) }
       def distance(other)
-        h1, s1, l1 = hsluv
-        h2, s2, l2 = other.send(:hsluv)
-        puts(">>#{[h1,s1,l1].inspect}") if $d
-        puts("<<#{[h2,s2,l2].inspect}") if $d
-        Math.sqrt(
-          ((h1 - h2) / 100.0)**2 +\
-          (s1 - s2)**2 +\
-          (l1 - l2)**2)
+        r_avg = r + other.r / 2.0
+        d_r = r - other.r
+        d_g = g - other.g
+        d_b = b - other.b
+        Math.sqrt((2 + r_avg) * (d_r**2) + 4 * (d_g**2) + (2 + (1 - r_avg)) * (d_b**2))
       end
 
       private
-
-      sig { returns([Float, Float, Float]) }
-      def hsluv
-        return(@hsluv) if @hsluv
-        @hsluv = T.let(HSLuv.rgb_to_hsluv(@r, @g, @b), T.nilable([Float, Float, Float]))
-        T.must(@hsluv)
-      end
 
       sig { params(prefix: String).returns(String) }
       def sequence(prefix)

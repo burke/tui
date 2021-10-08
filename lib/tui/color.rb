@@ -19,7 +19,6 @@ module TUI
 
     autoload(:ANSI256Color, 'tui/color/ansi256_color')
     autoload(:ANSIColor,    'tui/color/ansi_color')
-    autoload(:HSLuv,        'tui/color/hsluv')
     autoload(:NoColor,      'tui/color/no_color')
     autoload(:RGBColor,     'tui/color/rgb_color')
 
@@ -27,14 +26,9 @@ module TUI
     def to_ansi
       exact = to_rgb
       candidates = (0...16).map { |i| ANSIColor.new(i) }
-      # raise exact.distance(candidates[6].to_rgb).to_s
-      fs = candidates.map do |c|
+      candidates.min_by do |c|
         c.to_rgb.distance(exact).round(1)
       end
-      # raise(fs.inspect)
-      # {0:2.196094}{1:1.803043}{2:0.652678}{3:1.074800}{4:0.772117}{5:1.157053}{6:0.122511}{7:2.206149}{8:2.173502}{9:1.808231}{10:0.826530}{11:1.226284}{12:0.737902}{13:1.180696}{14:0.551108}{15:2.258927}
-      # [88.02165990951697, 15.425528882638144, 29.119700331883248, 34.13330583818599, 16.652766893077544, 16.99849823818241, 30.87118362669329, 102.54097868053971, 91.45010204158176, 35.415734352655214, 68.27600740528045, 77.49485067076564, 18.411153001082287, 41.898415900651145, 71.57256482936046, 116.3544907351986]
-      T.must(candidates.min_by { |c| exact.distance(c.to_rgb) })
     end
 
     sig { returns(RGBColor) }
