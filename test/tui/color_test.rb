@@ -19,8 +19,6 @@ module TUI
       assert_kind_of(Color::RGBColor, Color::RGBColor.new(1.0, 1.0, 1.0).to_rgb)
       assert_kind_of(Color::RGBColor, Color::ANSI256Color.new(1).to_rgb)
       assert_kind_of(Color::RGBColor, Color::ANSIColor.new(1).to_rgb)
-      # how should we actually handle this?
-      assert_raises { Color::NoColor.new.to_rgb }
     end
 
     def test_to_ansi

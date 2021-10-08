@@ -8,14 +8,14 @@ module TUI
       extend(T::Sig)
       extend(Profile)
 
-      sig { override.params(c: TUI::Color).returns(TUI::Color::NoColor) }
+      sig { override.params(c: TUI::Color).returns(NilClass) }
       def self.convert(c)
-        Color::NoColor.new
+        nil
       end
 
-      sig { override.params(hex: String).returns(TUI::Color::NoColor) }
+      sig { override.params(hex: String).returns(NilClass) }
       def self.color(hex)
-        Color::NoColor.new
+        nil
       end
     end
   end

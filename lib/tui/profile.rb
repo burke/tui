@@ -13,10 +13,10 @@ module TUI
     autoload(:ANSI256,   'tui/profile/ansi256')
     autoload(:TrueColor, 'tui/profile/true_color')
 
-    sig { abstract.params(c: Color).returns(Color) }
+    sig { abstract.params(c: Color).returns(T.nilable(Color)) }
     def convert(c); end
 
-    sig { abstract.params(hex: String).returns(Color) }
+    sig { abstract.params(hex: String).returns(T.nilable(Color)) }
     def color(hex); end
 
     sig { params(term: T.nilable(String), colorterm: T.nilable(String), stdout: IO).returns(Profile) }

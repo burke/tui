@@ -19,7 +19,6 @@ module TUI
 
     autoload(:ANSI256Color, 'tui/color/ansi256_color')
     autoload(:ANSIColor,    'tui/color/ansi_color')
-    autoload(:NoColor,      'tui/color/no_color')
     autoload(:RGBColor,     'tui/color/rgb_color')
 
     sig { abstract.returns(RGBColor) }
