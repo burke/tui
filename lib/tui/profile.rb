@@ -19,12 +19,11 @@ module TUI
     sig { abstract.params(s: String).returns(Color) }
     def color(s); end
 
-    sig { returns(Profile) }
-    def self.current
-      return(Profile::ASCII) unless $stdout.tty?
-      term = ENV['TERM']
+    sig { params(term: T.nilable(String), colorterm: T.nilable(String), stdout: IO).returns(Profile) }
+    def self.current(term: ENV['TERM'], colorterm: ENV['COLORTERM'], stdout: STDOUT)
+      return(Profile::ASCII) unless stdout.tty?
 
-      case ENV['COLORTERM']&.downcase
+      case colorterm&.downcase
       when '24bit', 'truecolor'
         if term == 'screen' || !term&.start_with?('screen')
           # enable TrueColor in tmux, but not old-school screen
