@@ -55,6 +55,49 @@ module TUI
         self
       end
 
+      sig { params(v: Float).returns(Integer) }
+      def v2ci(v)
+        return(0) if v < 48.0
+        return(1) if v < 115.0
+        ((v - 35.0) / 40.0).to_i
+      end
+
+      sig { returns(ANSI256Color) }
+      def to_ansi256
+        # Calculate the nearest 0-based color index at 16..231
+        r = v2ci(@r * 255.0) # 0..5 each
+        g = v2ci(@g * 255.0)
+        b = v2ci(@b * 255.0)
+        ci = 36 * r + 6 * g + b # 0..215
+
+        # Calculate the represented colors back from the index
+        i2cv = [0, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
+        cr = i2cv[r] # r/g/b, 0..255 each
+        cg = i2cv[g]
+        cb = i2cv[b]
+
+        # Calculate the nearest 0-based gray index at 232..255
+        average = (r + g + b) / 3
+        gray_idx = if average > 238
+          23
+        else
+          (average - 3) / 10 # 0..23
+        end
+        gv = 8 + 10 * grayIdx # same value for r/g/b, 0..255
+
+        # Return the one which is nearer to the original input rgb value
+        c2 = RGBColor.new(cr / 255.0, cg / 255.0, cb / 255.0)
+        g2 = RGBColor.new(gv / 255.0, gv / 255.0, gv / 255.0)
+        color_dist = distance(c2)
+        gray_dist = distance(g2)
+
+        if color_dist <= gray_dist
+          ANSI256Color.new(16 + ci)
+        else
+          ANSI256Color.new(232 + grayIdx)
+        end
+      end
+
       # termenv uses HSLuv distance, but converting to HSLuv is fairly
       # expensive (and couldn't get code working properly for it after a few
       # hours of effort)
