@@ -55,6 +55,13 @@ module TUI
         self
       end
 
+      # like with distance, there are better ways to do this, but this is good
+      # enough for now.
+      sig { returns(Float) }
+      def luminance
+        Math.sqrt(0.299 * r**2 + 0.587 * g**2 + 0.114 * b**2)
+      end
+
       sig { params(v: Float).returns(Integer) }
       def v2ci(v)
         v *= 255.0

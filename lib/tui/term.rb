@@ -91,6 +91,12 @@ module TUI
         Color.from_xterm(color)
       end
 
+      sig { returns(T::Boolean) }
+      def dark_background?
+        color = Query.osc(OSC_BACKGROUND_COLOR_CODE)
+        Color.from_xterm(color).luminance < 0.5
+      end
+
       sig { returns([Integer, Integer]) }
       def cursor_position
         # raises if unable
