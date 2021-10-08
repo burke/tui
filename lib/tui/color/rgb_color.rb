@@ -17,7 +17,7 @@ module TUI
       sig { params(r: Float, g: Float, b: Float).void }
       def initialize(r, g, b)
         if r < 0.0 || r > 1.0 || g < 0.0 || g > 1.0 || b < 0.0 || b > 1.0
-          raise(ArgumentError, 'component out of bounds (0.0 .. 1.0)')
+          raise(ArgumentError, "component out of bounds in (#{r},#{g},#{b})")
         end
         @r = r
         @g = g
@@ -57,17 +57,28 @@ module TUI
 
       sig { params(v: Float).returns(Integer) }
       def v2ci(v)
+        v *= 255.0
         return(0) if v < 48.0
         return(1) if v < 115.0
         ((v - 35.0) / 40.0).to_i
       end
 
+      # gray values are [8, 18, 28, 38, ..., 238]
+      # There are 24 of them. They start at 8, and go up by 10, stopping at
+      # 238.
+      sig { params(v: Float).returns(Integer) }
+      def v2gi(v) # 0.0 .. 1.0
+        v *= 255.0
+        gi = (v - 8.0) / 10.0
+        [23, [0, gi.round].max].min
+      end
+
       sig { returns(ANSI256Color) }
       def to_ansi256
         # Calculate the nearest 0-based color index at 16..231
-        r = v2ci(@r * 255.0) # 0..5 each
-        g = v2ci(@g * 255.0)
-        b = v2ci(@b * 255.0)
+        r = v2ci(@r) # 0..5 each
+        g = v2ci(@g)
+        b = v2ci(@b)
         ci = 36 * r + 6 * g + b # 0..215
 
         # Calculate the represented colors back from the index
@@ -76,13 +87,13 @@ module TUI
         cg = T.must(i2cv[g])
         cb = T.must(i2cv[b])
 
+        rg = v2gi(@r) # 0..23
+        gg = v2gi(@g)
+        bg = v2gi(@b)
+
         # Calculate the nearest 0-based gray index at 232..255
-        average = (r + g + b) / 3
-        gray_idx = if average > 238
-          23
-        else
-          (average - 3) / 10 # 0..23
-        end
+        average = (rg + gg + bg) / 3.0
+        gray_idx = average.round
         gv = 8 + 10 * gray_idx # same value for r/g/b, 0..255
 
         # Return the one which is nearer to the original input rgb value

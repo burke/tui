@@ -31,10 +31,8 @@ module TUI
       end)
     end
 
-    sig { returns(RGBColor) }
-    def to_rgb
-      Color.from_hex(hex)
-    end
+    sig { abstract.returns(RGBColor) }
+    def to_rgb; end
 
     sig { params(str: String).returns(RGBColor) }
     def self.from_xterm(str)

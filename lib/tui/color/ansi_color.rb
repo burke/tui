@@ -11,33 +11,41 @@ module TUI
       BACKGROUND = 40
       BRIGHT = 60
 
-      sig { params(n: Integer).void }
-      def initialize(n)
-        raise(ArgumentError, "invalid color index: #{n}") unless n >= 0 && n < 16
-        @n = n
+      sig { params(index: Integer).void }
+      def initialize(index)
+        raise(ArgumentError, "invalid color index: #{index}") unless index >= 0 && index < 16
+        @index = index
         super()
+      end
+
+      sig { returns(Integer) }
+      attr_reader(:index)
+
+      sig { params(other: T.untyped).returns(T::Boolean) }
+      def ==(other)
+        self.class == other.class && index == other.index
       end
 
       sig { override.returns(String) }
       def hex
-        T.must(PALETTE[@n]) # verified in initialize
+        T.must(PALETTE[@index]) # verified in initialize
       end
 
       sig { override.returns(String) }
       def sequence_fg
-        if @n < 8
-          (FOREGROUND + @n).to_s
+        if @index < 8
+          (FOREGROUND + @index).to_s
         else
-          (FOREGROUND + BRIGHT + @n - 8).to_s
+          (FOREGROUND + BRIGHT + @index - 8).to_s
         end
       end
 
       sig { override.returns(String) }
       def sequence_bg
-        if @n < 8
-          (BACKGROUND + @n).to_s
+        if @index < 8
+          (BACKGROUND + @index).to_s
         else
-          (BACKGROUND + BRIGHT + @n - 8).to_s
+          (BACKGROUND + BRIGHT + @index - 8).to_s
         end
       end
 

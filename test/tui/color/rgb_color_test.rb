@@ -16,6 +16,27 @@ module TUI
         refute_equal(RGBColor.new(1.0, 0.5, 0.5), RGBColor.new(0.5, 0.5, 0.5).to_rgb)
       end
 
+      def test_to_ansi256
+        # these results are just descriptive of what I got when I made up some
+        # stuff. If you are looking at this going "wait, why is it this value
+        # and not this other, better one?", then you are right, and feel free
+        # to change it.
+        assert_equal(ANSI256Color.new(210), RGBColor.new(1.0, 0.5, 0.5).to_ansi256)
+        assert_equal(ANSI256Color.new(94), RGBColor.new(0.5, 0.2, 0.1).to_ansi256)
+        assert_equal(ANSI256Color.new(196), RGBColor.new(1.0, 0.0, 0.0).to_ansi256)
+        256.times do |index|
+          # we don't cast into the first 16 slots, because they're more likely
+          # to vary based on user config. So, we always select an element from
+          # the rest of the space, which doesn't contain all of the estimated
+          # values we have for the lower 16.
+          next if index < 16
+          assert_equal(
+            ANSI256Color.new(index).hex,
+            ANSI256Color.new(index).to_rgb.to_ansi256.hex,
+          )
+        end
+      end
+
       def test_bounds_checking
         RGBColor.new(0.0, 0.0, 0.0)
         assert_raises(ArgumentError) { RGBColor.new(-0.00001, 0.0, 0.0) }

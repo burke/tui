@@ -7,26 +7,34 @@ module TUI
     class ANSI256Color < Color
       extend(T::Sig)
 
-      sig { params(n: Integer).void }
-      def initialize(n)
-        raise(ArgumentError, "invalid color index: #{n}") unless n >= 0 && n < 256
-        @n = n
+      sig { params(index: Integer).void }
+      def initialize(index)
+        raise(ArgumentError, "invalid color index: #{index}") unless index >= 0 && index < 256
+        @index = index
         super()
+      end
+
+      sig { returns(Integer) }
+      attr_reader(:index)
+
+      sig { params(other: T.untyped).returns(T::Boolean) }
+      def ==(other)
+        self.class == other.class && index == other.index
       end
 
       sig { override.returns(String) }
       def hex
-        T.must(PALETTE[@n]) # verified in initialize
+        T.must(PALETTE[@index]) # verified in initialize
       end
 
       sig { override.returns(String) }
       def sequence_fg
-        "38;5;#{@n}"
+        "38;5;#{@index}"
       end
 
       sig { override.returns(String) }
       def sequence_bg
-        "48;5;#{@n}"
+        "48;5;#{@index}"
       end
 
       sig { override.returns(RGBColor) }

@@ -9,6 +9,18 @@ module TUI
       assert_equal('#00ff66', Color.from_hex('#00ff66').hex)
       assert_equal('#00ff66', Color.from_hex('#00FF66').hex)
       assert_equal('#abcdef', Color.from_hex('#abcdef').hex)
+
+      bad_hex('#abc')
+      bad_hex('#abcdefg')
+      bad_hex('abcdef')
+    end
+
+    def test_to_rgb
+      assert_kind_of(Color::RGBColor, Color::RGBColor.new(1.0, 1.0, 1.0).to_rgb)
+      assert_kind_of(Color::RGBColor, Color::ANSI256Color.new(1).to_rgb)
+      assert_kind_of(Color::RGBColor, Color::ANSIColor.new(1).to_rgb)
+      # how should we actually handle this?
+      assert_raises { Color::NoColor.new.to_rgb }
     end
 
     def test_to_ansi
@@ -26,6 +38,10 @@ module TUI
 
     def bad_xterm(s)
       assert_raises(ArgumentError) { Color.from_xterm(s) }
+    end
+
+    def bad_hex(s)
+      assert_raises(ArgumentError) { Color.from_hex(s) }
     end
   end
 end
