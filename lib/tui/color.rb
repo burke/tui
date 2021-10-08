@@ -38,6 +38,9 @@ module TUI
 
     sig { params(str: String).returns(RGBColor) }
     def self.from_xterm(str)
+      unless str.match?(%r{\Argb:[a-f0-9]{4}/[a-f0-9]{4}/[a-f0-9]{4}\z})
+        raise(ArgumentError, "invalid xterm color: #{str}")
+      end
       hex = str.sub(/^rgb:/, '').split('/').map { |c| c[0...2] }.join.prepend('#')
       from_hex(hex)
     end

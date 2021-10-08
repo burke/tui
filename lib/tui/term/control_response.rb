@@ -14,10 +14,45 @@ module TUI
       S_OSC_VALUE = :osc_value
       S_ANSI_ESC  = :ansi_esc
 
+      class ANSISequence
+        extend(T::Sig)
+
+        sig { returns(String) }
+        attr_reader(:code)
+
+        sig { returns(T::Array[Integer]) }
+        attr_reader(:args)
+
+        sig { params(code: String, args: T::Array[Integer]).void }
+        def initialize(code, args)
+          @code = code
+          @args = args
+        end
+      end
+
+      class ParseError < StandardError
+        extend(T::Sig)
+
+        sig { params(msg: String, state: Symbol, index: Integer, desc: String).void }
+        def initialize(msg, state, index, desc)
+          @msg = msg
+          @state = state
+          @index = index
+          @desc = desc
+          super()
+        end
+
+        sig { returns(String) }
+        def to_s
+          "parse error: #{@desc}: at index #{@index} in string #{@msg} (state:#{@state})"
+        end
+      end
+
       sig { params(msg: String).returns(ControlResponse) }
       def self.parse(msg)
         state = S_INIT
-        data = {}
+        osc = T.let({}, T::Hash[Integer, String])
+        ansi = T.let([], T::Array[ANSISequence])
         curr = +''
         prev = +''
         args = []
@@ -29,7 +64,7 @@ module TUI
             when "\x1b"
               state = S_CSI
             else
-              raise("unexpected byte: #{b} at index #{i} in string #{msg} (state:#{state})")
+              raise(ParseError.new(msg, state, i, 'unexpected byte'))
             end
           when S_CSI
             case b
@@ -40,7 +75,7 @@ module TUI
               curr = +''
               state = S_ANSI_ESC
             else
-              raise("unexpected byte: #{b} at index #{i} in string #{msg} (state:#{state})")
+              raise(ParseError.new(msg, state, i, 'unexpected byte'))
             end
           when S_OSC_KEY
             case b
@@ -54,8 +89,7 @@ module TUI
           when S_OSC_VALUE
             case b
             when "\a"
-              data[:osc] ||= {}
-              data[:osc][Integer(prev)] = curr
+              osc[Integer(prev)] = curr
               curr = +''
               prev = +''
               state = S_INIT
@@ -70,31 +104,46 @@ module TUI
             when /[a-zA-Z]/
               args << Integer(curr)
               curr = +''
-              data[:ansi] ||= []
-              data[:ansi] << [*args, b]
+              ansi << ANSISequence.new(b, args)
               args = []
               state = S_INIT
             else
               curr << b
             end
           else
-            raise('unexpected state')
+            # :nocov: - can't really force  this error, it won't happen in
+            # practice unless there's a bug elsewhere in this function.
+            raise(ParseError.new(msg, state, i, 'unexpected state'))
+            # :nocov:
           end
         end
         if state != S_INIT
-          raise("incomplete input msg=#{msg} (final state:#{state})")
+          raise(ParseError.new(msg, state, msg.size, 'incomplete input'))
         end
-        new(data)
+        new(osc, ansi)
       end
 
       private_class_method(:new)
 
-      sig { returns(T.untyped) }
-      attr_reader(:data)
+      sig { params(osc: T::Hash[Integer, String], ansi: T::Array[ANSISequence]).void }
+      def initialize(osc, ansi)
+        @osc = osc
+        @ansi = ansi
+      end
 
-      sig { params(data: T.untyped).void }
-      def initialize(data)
-        @data = data
+      sig { params(attr: Integer).returns(T.nilable(String)) }
+      def osc_attribute(attr)
+        @osc[attr]
+      end
+
+      sig { returns(T::Array[Integer]) }
+      def osc_attributes
+        @osc.keys
+      end
+
+      sig { returns(T::Array[ANSISequence]) }
+      def ansi_sequences
+        @ansi
       end
     end
   end

@@ -9,6 +9,8 @@ module TUI
 
     autoload(:ControlResponse, 'tui/term/control_response')
 
+    AttributeUnavailableError = Class.new(StandardError)
+
     ESC = "\x1b"
     CSI = T.let(ESC + '[', String)
     OSC = T.let(ESC + ']', String)
@@ -77,19 +79,30 @@ module TUI
     class << self
       extend(T::Sig)
 
-      # rubocop:disable Style/SingleLineMethods
-
       sig { returns(Color) }
       def osc_query_foreground_color
-        color = osc_dsr_query(OSC_FOREGROUND_COLOR_CODE)
+        color = osc_query(OSC_FOREGROUND_COLOR_CODE)
         Color.from_xterm(color)
       end
 
       sig { returns(Color) }
       def osc_query_background_color
-        color = osc_dsr_query(OSC_BACKGROUND_COLOR_CODE)
+        color = osc_query(OSC_BACKGROUND_COLOR_CODE)
         Color.from_xterm(color)
       end
+
+      sig { returns([Integer, Integer]) }
+      def cursor_position
+        unless (ansi_seq = dsr_query.detect { |els| els.code == 'R' })
+          raise(AttributeUnavailableError, 'failed to query cursor position')
+        end
+        # we could check that the length is 2 instead of leaning on sorbet-runtime
+        r = T.must(ansi_seq.args[0])
+        c = T.must(ansi_seq.args[1])
+        [r, c]
+      end
+
+      # rubocop:disable Style/SingleLineMethods
 
       # reset the terminal to its default style, removing any active styles.
       sig { void }
@@ -305,25 +318,40 @@ module TUI
 
       private
 
+      sig { returns(T::Array[ControlResponse::ANSISequence]) }
+      def dsr_query
+        cr = osc_dsr_query([])
+        cr.ansi_sequences
+      end
+
       sig { params(attribute: Integer).returns(String) }
-      def osc_dsr_query(attribute)
+      def osc_query(attribute)
+        cr = osc_dsr_query([attribute])
+        if (attr = cr.osc_attribute(attribute))
+          return attr
+        end
+        raise(AttributeUnavailableError, "failed to query OSC attribute #{attribute}")
+      end
+
+      sig { params(osc_attributes: T::Array[Integer]).returns(ControlResponse) }
+      def osc_dsr_query(osc_attributes)
         response = STDIN.raw do
           STDIN.noecho do
-            # first, send OSC query, which is ignored by terminals without support
             msg = +''
-            if attribute
-              msg << CSI + OSC + attribute.to_s + ';?' + BEL
+            # first, send OSC query, which is ignored by terminals without support
+            osc_attributes.each do |attr|
+              msg << CSI + OSC + attr.to_s + ';?' + BEL
             end
             # then, query cursor position, even if the user didn't want it,
             # because it's supported by ~all terminals and will make the
             # readpartial call not hang when called on a terminal not
             # supporting OSC, which will print nothing otherwise.
             msg << CSI + DEVICE_STATUS_REPORT_SEQ
-            print(msg)
+            STDOUT.print(msg)
             STDIN.readpartial(128)
           end
         end
-        ControlResponse.parse(response).data.dig(:osc, attribute)
+        ControlResponse.parse(response)
       end
     end
   end
