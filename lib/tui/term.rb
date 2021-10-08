@@ -1,13 +1,26 @@
 # typed: strict
 # frozen_string_literal: true
 require('tui')
+require('io/console')
 
 module TUI
   module Term
     extend(T::Sig)
 
-    CSI = "\x1b["
+    ESC = "\x1b"
+    CSI = ESC + '['
+    OSC = ESC + ']'
+    BEL = "\a"
+    OSC_QUERY_ARG = '?'
     SGR = 'm'
+
+    OSC_WINDOW_TITLE_CODE         = 0
+    OSC_COLOR_PALETTE_CODE        = 4
+    OSC_NOTIFICATION_PALETTE_CODE = 9
+    OSC_FOREGROUND_COLOR_CODE     = 10
+    OSC_BACKGROUND_COLOR_CODE     = 11
+    OSC_CURSOR_SHAPE_CODE         = 50
+    OSC_CLIPBOARD_OPERATIONS_CODE = 52
 
     RESET_SEQ     = '0'
     BOLD_SEQ      = '1'
@@ -57,10 +70,130 @@ module TUI
     ALT_SCREEN_SEQ                = '?1049h'
     EXIT_ALT_SCREEN_SEQ           = '?1049l'
 
+    DEVICE_STATUS_REPORT_SEQ      = '6n'
+
+    class ControlResponse
+      def self.parse(msg)
+        new(msg).parse
+      end
+
+      def initialize(msg)
+        @msg = msg
+      end
+
+      S_INIT      = :init
+      S_CSI       = :csi
+      S_OSC_KEY   = :osc_key
+      S_OSC_VALUE = :osc_value
+      S_ANSI_ESC  = :ansi_esc
+
+      def parse
+        state = S_INIT
+        data = {}
+        curr = +''
+        prev = +''
+        args = []
+        @msg.each_byte.with_index do |b, i|
+          b = b.chr
+          case state
+          when S_INIT
+            case b
+            when "\x1b"
+              state = S_CSI
+            else
+              raise("unexpected byte: #{b} at index #{i} in string #{@msg} (state:#{state})")
+            end
+          when S_CSI
+            case b
+            when ']'
+              curr = +''
+              state = S_OSC_KEY
+            when '['
+              curr = +''
+              state = S_ANSI_ESC
+            else
+              raise("unexpected byte: #{b} at index #{i} in string #{@msg} (state:#{state})")
+            end
+          when S_OSC_KEY
+            case b
+            when ';'
+              prev = curr
+              curr = +''
+              state = S_OSC_VALUE
+            else
+              curr << b
+            end
+          when S_OSC_VALUE
+            case b
+            when "\a"
+              data[:osc] ||= {}
+              data[:osc][Integer(prev)] = curr
+              curr = +''
+              prev = +''
+              state = S_INIT
+            else
+              curr << b
+            end
+          when S_ANSI_ESC
+            case b
+            when ';'
+              args << Integer(curr)
+              curr = +''
+            when /[a-zA-Z]/
+              args << Integer(curr)
+              curr = +''
+              data[:ansi] ||= []
+              data[:ansi] << [*args, b]
+              args = []
+              state = S_INIT
+            else
+              curr << b
+            end
+          else
+            raise('unexpected state')
+          end
+        end
+        if state != S_INIT
+          raise("incomplete input msg=#{@msg} (final state:#{state})")
+        end
+        data
+      end
+    end
+
     class << self
       extend(T::Sig)
 
       # rubocop:disable Style/SingleLineMethods
+
+      def osc_query_foreground_color
+        color = osc_dsr_query(OSC_FOREGROUND_COLOR_CODE)
+        Color.from_xterm(color)
+      end
+
+      def osc_query_background_color
+        color = osc_dsr_query(OSC_BACKGROUND_COLOR_CODE)
+        Color.from_xterm(color)
+      end
+
+      def osc_dsr_query(attribute)
+        response = STDIN.raw do
+          STDIN.noecho do
+            # first, send OSC query, which is ignored by terminals without support
+            msg = +''
+            if attribute
+              msg << CSI + OSC + attribute.to_s + ';?' + BEL
+            end
+            # then, query cursor position, even if the user didn't want it,
+            # because it's supported by ~all terminals and will make the
+            # readpartial call not hang when called on a terminal not
+            # supporting OSC, which will print nothing otherwise.
+            msg << CSI + DEVICE_STATUS_REPORT_SEQ
+            print(msg)
+            STDIN.readpartial(128)
+          end
+        end
+        ControlResponse.parse(response).dig(:osc, attribute)
+      end
 
       # reset the terminal to its default style, removing any active styles.
       sig { void }

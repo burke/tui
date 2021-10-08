@@ -36,6 +36,11 @@ module TUI
       Color.from_hex(hex)
     end
 
+    def self.from_xterm(str)
+      hex = str.sub(/^rgb:/, '').split('/').map { |c| c[0...2] }.join.prepend('#')
+      from_hex(hex)
+    end
+
     sig { params(hex: String).returns(RGBColor) }
     def self.from_hex(hex)
       unless hex.match?(/\A#[0-9a-fA-F]{6}\z/)
