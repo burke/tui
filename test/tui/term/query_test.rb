@@ -31,17 +31,23 @@ module TUI
       end
 
       def test_osc_with_no_tty
-        io = IO.new(8)
+        io, w = IO.pipe
+        w.close
         Query.stubs(:stdin).returns(io)
         Query.stubs(:stdout).returns(io)
         assert_raises(Query::Error) { Query.osc(10) }
+      ensure
+        io&.close
       end
 
       def test_dsr_with_no_tty
-        io = IO.new(8)
+        io, w = IO.pipe
+        w.close
         Query.stubs(:stdin).returns(io)
         Query.stubs(:stdout).returns(io)
         assert_raises(Query::Error) { Query.dsr }
+      ensure
+        io&.close
       end
 
       private
