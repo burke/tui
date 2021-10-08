@@ -83,7 +83,7 @@ module TUI
         else
           (average - 3) / 10 # 0..23
         end
-        gv = 8 + 10 * grayIdx # same value for r/g/b, 0..255
+        gv = 8 + 10 * gray_idx # same value for r/g/b, 0..255
 
         # Return the one which is nearer to the original input rgb value
         c2 = RGBColor.new(cr / 255.0, cg / 255.0, cb / 255.0)
@@ -94,17 +94,19 @@ module TUI
         if color_dist <= gray_dist
           ANSI256Color.new(16 + ci)
         else
-          ANSI256Color.new(232 + grayIdx)
+          ANSI256Color.new(232 + gray_idx)
         end
       end
 
       # termenv uses HSLuv distance, but converting to HSLuv is fairly
-      # expensive (and couldn't get code working properly for it after a few
-      # hours of effort)
+      # expensive (and I couldn't get code working properly for it after a few
+      # hours of effort). Replacing this code with HSLuv distance would
+      # probably be an improvement as long as it's not unreasonably expensive.
       #
       # This is is a color distance algorithm developed by Thiadmer Riemersma.
       # It uses RGB coordinates, but he claims it has similar results to
-      # CIELUV. This makes it both fast and accurate.
+      # CIELUV. This makes it dramatically faster than HSLuv while still being
+      # reasonably perceptually accurate.
       sig { params(other: RGBColor).returns(Float) }
       def distance(other)
         r_avg = r + other.r / 2.0
