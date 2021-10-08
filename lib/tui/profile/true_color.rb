@@ -13,9 +13,9 @@ module TUI
         c.to_rgb
       end
 
-      sig { override.params(hex: String).returns(Color::RGBColor) }
-      def self.color(hex)
-        convert(Color.from_hex(hex))
+      sig { override.params(spec: String).returns(Color::RGBColor) }
+      def self.color(spec)
+        convert(Color[spec])
       end
     end
   end

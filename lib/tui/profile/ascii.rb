@@ -13,8 +13,8 @@ module TUI
         nil
       end
 
-      sig { override.params(hex: String).returns(NilClass) }
-      def self.color(hex)
+      sig { override.params(spec: String).returns(NilClass) }
+      def self.color(spec)
         nil
       end
     end

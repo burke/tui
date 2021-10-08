@@ -8,6 +8,25 @@ module TUI
     extend(T::Helpers)
     abstract!
 
+    sig { params(spec: String).returns(Color) }
+    def self.[](spec)
+      case spec
+      when /^#/
+        from_hex(spec)
+      when /^\d+$/
+        i = spec.to_i
+        if i < 16
+          ANSIColor.new(i)
+        elsif i < 256
+          ANSI256Color.new(i)
+        else
+          raise(ArgumentError, 'invalid color')
+        end
+      else
+        raise(ArgumentError, 'invalid color')
+      end
+    end
+
     sig { abstract.returns(String) }
     def hex; end
 
