@@ -26,9 +26,9 @@ module TUI
     def to_ansi
       exact = to_rgb
       candidates = (0...16).map { |i| ANSIColor.new(i) }
-      candidates.min_by do |c|
+      T.must(candidates.min_by do |c|
         c.to_rgb.distance(exact).round(1)
-      end
+      end)
     end
 
     sig { returns(RGBColor) }

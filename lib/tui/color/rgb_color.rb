@@ -72,9 +72,9 @@ module TUI
 
         # Calculate the represented colors back from the index
         i2cv = [0, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
-        cr = i2cv[r] # r/g/b, 0..255 each
-        cg = i2cv[g]
-        cb = i2cv[b]
+        cr = T.must(i2cv[r]) # r/g/b, 0..255 each
+        cg = T.must(i2cv[g])
+        cb = T.must(i2cv[b])
 
         # Calculate the nearest 0-based gray index at 232..255
         average = (r + g + b) / 3
