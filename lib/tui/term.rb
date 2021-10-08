@@ -93,8 +93,7 @@ module TUI
 
       sig { returns(T::Boolean) }
       def dark_background?
-        color = Query.osc(OSC_BACKGROUND_COLOR_CODE)
-        Color.from_xterm(color).luminance < 0.5
+        background_color.luminance < 0.5
       end
 
       sig { returns([Integer, Integer]) }
