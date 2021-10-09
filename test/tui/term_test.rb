@@ -10,6 +10,11 @@ module TUI
       assert_equal(seq, actual[2..-1])
     end
 
+    def test_dark_background
+      assert(Term.dark_background?(Color['#000000']))
+      refute(Term.dark_background?(Color['#ffffff']))
+    end
+
     def test_background_color
       Term::Query.expects(:osc).with(11).returns('rgb:1234/2345/3456')
       assert_equal('#122334', Term.background_color.hex)
