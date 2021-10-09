@@ -8,6 +8,11 @@ module TUI
     extend(T::Helpers)
     abstract!
 
+    autoload(:Adaptive,     'tui/color/adaptive')
+    autoload(:ANSI256Color, 'tui/color/ansi256_color')
+    autoload(:ANSIColor,    'tui/color/ansi_color')
+    autoload(:RGBColor,     'tui/color/rgb_color')
+
     sig { params(spec: T.any(String, Integer)).returns(Color) }
     def self.[](spec)
       case spec
@@ -44,10 +49,6 @@ module TUI
 
     sig { abstract.returns(String) }
     def sequence_bg; end
-
-    autoload(:ANSI256Color, 'tui/color/ansi256_color')
-    autoload(:ANSIColor,    'tui/color/ansi_color')
-    autoload(:RGBColor,     'tui/color/rgb_color')
 
     sig { abstract.returns(RGBColor) }
     def to_rgb; end
