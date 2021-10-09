@@ -11,10 +11,10 @@ module TUI
     sig { params(spec: T.any(String, Integer)).returns(Color) }
     def self.[](spec)
       case spec
+      when Integer, /^\d+$/
+        from_index(spec.to_i)
       when /^#/
         from_hex(spec)
-      when /^\d+$/, Integer
-        from_index(spec.to_i)
       else
         raise(ArgumentError, 'invalid color')
       end

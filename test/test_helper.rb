@@ -15,6 +15,7 @@ SimpleCov.start do
   # SimpleCov uses a "creative" DSL here with block rebinding.
   # Sorbet doesn't like it.
   T.unsafe(self).add_filter('/test/')
+  T.unsafe(self).add_filter('/examples/')
 end
 
 require('tui')

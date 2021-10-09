@@ -3,10 +3,10 @@
 require('tui')
 
 module TUI
-  module Profile
+  module ColorProfile
     module ANSI
       extend(T::Sig)
-      extend(Profile)
+      extend(ColorProfile)
 
       sig { override.params(c: Color).returns(Color::ANSIColor) }
       def self.convert(c)

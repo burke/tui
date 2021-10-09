@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Profile
+  module ColorProfile
     class ANSI256Test < Minitest::Test
       def test_ansi256_profile
         # tries its best with RGB values (note that this selection could likely

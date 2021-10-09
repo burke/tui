@@ -1,7 +1,7 @@
 $:.unshift(File.expand_path('../lib', __dir__))
 require('tui')
 
-p = TUI::Profile.current
+p = TUI::ColorProfile.detect
 
 print("\n\t")
 print(%i(bold faint italic underline cross_out).map do |attr|

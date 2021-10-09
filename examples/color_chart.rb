@@ -4,7 +4,7 @@ require('tui')
 # Basic ANSI colors 0 - 15
 puts(TUI::Term::Style.new(bold: true).render("Basic ANSI colors"))
 
-p = TUI::Profile::ANSI
+p = TUI::ColorProfile::ANSI
 
 16.times do |i|
   puts if i%8 == 0
@@ -28,7 +28,7 @@ print("\n\n")
 # Extended ANSI colors 16-231
 puts(TUI::Term::Style.new(bold: true).render("Extended ANSI colors"))
 
-p = TUI::Profile::ANSI256
+p = TUI::ColorProfile::ANSI256
 (16...232).each do |i|
   puts if (i-16)%6 == 0
 
@@ -52,7 +52,7 @@ print("\n\n")
 # Grayscale ANSI colors 232-255
 puts(TUI::Term::Style.new(bold: true).render("Extended ANSI Grayscale"))
 
-p = TUI::Profile::ANSI256
+p = TUI::ColorProfile::ANSI256
 (232...256).each do |i|
   puts if (i-232)%6 == 0
 

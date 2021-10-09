@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Profile
+  module ColorProfile
     class ASCIITest < Minitest::Test
       def test_ascii_profile
         assert_nil(ASCII.convert(Color.from_hex('#123478')))

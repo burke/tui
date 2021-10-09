@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Profile
+  module ColorProfile
     class TrueColorTest < Minitest::Test
       def test_true_color_profile
         assert_equal('#123456', TrueColor.convert(Color.from_hex('#123456')).hex)

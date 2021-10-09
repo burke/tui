@@ -3,7 +3,7 @@
 require('test_helper')
 
 module TUI
-  module Profile
+  module ColorProfile
     class ANSITest < Minitest::Test
       def test_ansi_profile
         # Tries. There's not a lot you can do with 16 colors.
