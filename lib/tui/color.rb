@@ -8,20 +8,24 @@ module TUI
     extend(T::Helpers)
     abstract!
 
-    sig { params(spec: String).returns(Color) }
+    sig { params(spec: T.any(String, Integer)).returns(Color) }
     def self.[](spec)
       case spec
       when /^#/
         from_hex(spec)
-      when /^\d+$/
-        i = spec.to_i
-        if i < 16
-          ANSIColor.new(i)
-        elsif i < 256
-          ANSI256Color.new(i)
-        else
-          raise(ArgumentError, 'invalid color')
-        end
+      when /^\d+$/, Integer
+        from_index(spec.to_i)
+      else
+        raise(ArgumentError, 'invalid color')
+      end
+    end
+
+    sig { params(index: Integer).returns(Color) }
+    def self.from_index(index)
+      if index < 16
+        ANSIColor.new(index)
+      elsif index < 256
+        ANSI256Color.new(index)
       else
         raise(ArgumentError, 'invalid color')
       end
