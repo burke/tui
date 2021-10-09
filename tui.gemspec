@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.6.0'
 
   spec.add_runtime_dependency('sorbet-runtime', '~> 0.5.9155')
+  spec.add_runtime_dependency('unicode-display_width', '~> 2.1.0')
 end

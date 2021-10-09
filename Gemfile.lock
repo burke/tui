@@ -3,6 +3,7 @@ PATH
   specs:
     tui (0.0.1)
       sorbet-runtime (~> 0.5.9155)
+      unicode-display_width (~> 2.1.0)
 
 GEM
   remote: https://rubygems.org/
