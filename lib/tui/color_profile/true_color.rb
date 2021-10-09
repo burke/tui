@@ -8,12 +8,12 @@ module TUI
       extend(T::Sig)
       extend(ColorProfile)
 
-      sig { override.params(c: TUI::Color).returns(Color::RGBColor) }
+      sig { override.params(c: TUI::Color).returns(Color::RGB) }
       def self.convert(c)
         c.to_rgb
       end
 
-      sig { override.params(spec: String).returns(Color::RGBColor) }
+      sig { override.params(spec: String).returns(Color::RGB) }
       def self.color(spec)
         convert(Color[spec])
       end

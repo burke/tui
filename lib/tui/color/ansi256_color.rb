@@ -50,7 +50,7 @@ module TUI
         "48;5;#{@index}"
       end
 
-      sig { override.returns(RGBColor) }
+      sig { override.returns(RGB) }
       def to_rgb
         Color.from_hex(hex)
       end

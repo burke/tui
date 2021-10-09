@@ -27,7 +27,7 @@ module TUI
         assert_equal('96', ANSIColor::BRIGHT_CYAN.sequence_fg)
         assert_equal('97', ANSIColor::BRIGHT_WHITE.sequence_fg)
 
-        assert_equal(RGBColor.new(1.0, 0.0, 0.0), ANSIColor::BRIGHT_RED.to_rgb)
+        assert_equal(RGB.new(1.0, 0.0, 0.0), ANSIColor::BRIGHT_RED.to_rgb)
       end
 
       def test_conversions

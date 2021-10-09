@@ -5,7 +5,7 @@ require('test_helper')
 module TUI
   class ColorTest < Minitest::Test
     def test_hex_roundtrip
-      assert_equal(Color::RGBColor.new(0.0, 1.0, 0.4), Color.from_hex('#00ff66'))
+      assert_equal(Color::RGB.new(0.0, 1.0, 0.4), Color.from_hex('#00ff66'))
       assert_equal('#00ff66', Color.from_hex('#00ff66').hex)
       assert_equal('#00ff66', Color.from_hex('#00FF66').hex)
       assert_equal('#abcdef', Color.from_hex('#abcdef').hex)
@@ -42,9 +42,9 @@ module TUI
     end
 
     def test_to_rgb
-      assert_kind_of(Color::RGBColor, Color::RGBColor.new(1.0, 1.0, 1.0).to_rgb)
-      assert_kind_of(Color::RGBColor, Color::ANSI256Color.new(1).to_rgb)
-      assert_kind_of(Color::RGBColor, Color::ANSIColor.new(1).to_rgb)
+      assert_kind_of(Color::RGB, Color::RGB.new(1.0, 1.0, 1.0).to_rgb)
+      assert_kind_of(Color::RGB, Color::ANSI256Color.new(1).to_rgb)
+      assert_kind_of(Color::RGB, Color::ANSIColor.new(1).to_rgb)
     end
 
     def test_to_ansi

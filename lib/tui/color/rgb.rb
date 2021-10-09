@@ -4,7 +4,7 @@ require('tui')
 
 module TUI
   class Color
-    class RGBColor < Color
+    class RGB < Color
       extend(T::Sig)
 
       sig { returns(Float) }
@@ -50,7 +50,7 @@ module TUI
         sequence('48')
       end
 
-      sig { override.returns(RGBColor) }
+      sig { override.returns(RGB) }
       def to_rgb
         self
       end
@@ -104,8 +104,8 @@ module TUI
         gv = 8 + 10 * gray_idx # same value for r/g/b, 0..255
 
         # Return the one which is nearer to the original input rgb value
-        c2 = RGBColor.new(cr / 255.0, cg / 255.0, cb / 255.0)
-        g2 = RGBColor.new(gv / 255.0, gv / 255.0, gv / 255.0)
+        c2 = RGB.new(cr / 255.0, cg / 255.0, cb / 255.0)
+        g2 = RGB.new(gv / 255.0, gv / 255.0, gv / 255.0)
         color_dist = distance(c2)
         gray_dist = distance(g2)
 
@@ -132,7 +132,7 @@ module TUI
       # It uses RGB coordinates, but he claims it has similar results to
       # CIELUV. This makes it dramatically faster than HSLuv while still being
       # reasonably perceptually accurate.
-      sig { params(other: RGBColor).returns(Float) }
+      sig { params(other: RGB).returns(Float) }
       def distance(other)
         r_avg = r + other.r / 2.0
         d_r = r - other.r

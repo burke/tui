@@ -52,7 +52,7 @@ module TUI
         resolve.sequence_bg
       end
 
-      sig { override.returns(RGBColor) }
+      sig { override.returns(RGB) }
       def to_rgb
         resolve.to_rgb
       end

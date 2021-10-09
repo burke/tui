@@ -11,7 +11,7 @@ module TUI
     autoload(:Adaptive,     'tui/color/adaptive')
     autoload(:ANSI256Color, 'tui/color/ansi256_color')
     autoload(:ANSIColor,    'tui/color/ansi_color')
-    autoload(:RGBColor,     'tui/color/rgb_color')
+    autoload(:RGB,          'tui/color/rgb')
 
     sig { params(spec: T.any(String, Integer)).returns(Color) }
     def self.[](spec)
@@ -50,7 +50,7 @@ module TUI
     sig { abstract.returns(String) }
     def sequence_bg; end
 
-    sig { abstract.returns(RGBColor) }
+    sig { abstract.returns(RGB) }
     def to_rgb; end
 
     sig { abstract.returns(ANSI256Color) }
@@ -59,7 +59,7 @@ module TUI
     sig { abstract.returns(ANSIColor) }
     def to_ansi; end
 
-    sig { params(str: String).returns(RGBColor) }
+    sig { params(str: String).returns(RGB) }
     def self.from_xterm(str)
       unless str.match?(%r{\Argb:[a-f0-9]{4}/[a-f0-9]{4}/[a-f0-9]{4}\z})
         raise(ArgumentError, "invalid xterm color: #{str}")
@@ -68,7 +68,7 @@ module TUI
       from_hex(hex)
     end
 
-    sig { params(hex: String).returns(RGBColor) }
+    sig { params(hex: String).returns(RGB) }
     def self.from_hex(hex)
       unless hex.match?(/\A#[0-9a-fA-F]{6}\z/)
         raise(ArgumentError, "invalid hex color: #{hex.inspect}")
@@ -80,7 +80,7 @@ module TUI
         .each_byte.to_a        # [0, 255, 102]
         .map { |b| b / 255.0 } # [0.0, 1.0, 0.4]
 
-      RGBColor.new(rgb[0], rgb[1], rgb[2])
+      RGB.new(rgb[0], rgb[1], rgb[2])
     end
 
     PALETTE = T.let(%w(

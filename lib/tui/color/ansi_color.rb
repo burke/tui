@@ -61,7 +61,7 @@ module TUI
         end
       end
 
-      sig { override.returns(RGBColor) }
+      sig { override.returns(RGB) }
       def to_rgb
         Color.from_hex(hex)
       end
